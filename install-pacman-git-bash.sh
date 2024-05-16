@@ -20,7 +20,7 @@ git pull
 ### Pre install minimal pacman bootstrap
 d="var/lib/pacman/local"
 mkdir -p "/$d"
-pkgs=('pacman-6' 'pacman-mirrors-' 'msys2-keyring-')
+pkgs=('pacman-[0-9]' 'gettext-[0-9]' 'pacman-mirrors-' 'msys2-keyring-')
 for j in ${pkgs[@]} ; do
 	pacvers=$(basename $( git show main:$d|grep "$j" ))
 	echo $pacvers
@@ -84,7 +84,7 @@ spdup ()
 				 [ ! -f "/$d/$f" ] && curl -sSL "$RAWURL/$cs/$d/$f" -o /$d/$f 
 				fi
 			done
-			echo -e "$cs\t$package $version"
+			echo -e "$cs\t$package\t$version"
 			break
 		fi
 	done 
@@ -120,3 +120,5 @@ echo
 echo
 read -rs -p $"Press escape or arrow key to continue or wait 5 seconds..." -t 5 -d $'\e';echo;
 pacman -Syyuu
+
+cd .. && rm -rf git-sdk-64

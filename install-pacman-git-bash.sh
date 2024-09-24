@@ -5,11 +5,12 @@
 
 GITURL="https://github.com/git-for-windows/git-sdk-64.git"
 RAWURL="https://github.com/git-for-windows/git-sdk-64/raw"
+RAWURLB="https://raw.githubusercontent.com/git-for-windows/git-sdk-64"
 
 rm -rf git-sdk-64
 # Clone tiny blobless shallow repo
 git clone \
-	--depth 50 \
+	--depth 150 \
 	--filter=blob:none \
 	--no-checkout \
 	$GITURL
@@ -24,7 +25,7 @@ pkgs=('pacman-[0-9]' 'gettext-[0-9]' 'pacman-mirrors-' 'msys2-keyring-')
 for j in ${pkgs[@]} ; do
 	pacvers=$(basename $( git show main:$d|grep "$j" ))
 	echo $pacvers
-	shfiles=$(curl -sSL $RAWURL/main/$d/$pacvers/files )	
+	shfiles=$(curl -sSL $RAWURLB/main/$d/$pacvers/files )	
 	for f in $shfiles
 	do 
 	 if [[ $f = *"/"* ]] && [[ $f != *"/man/"* ]] && [[ $f != *"locale/"* ]] && [[ $f != *\/ ]]
@@ -32,7 +33,7 @@ for j in ${pkgs[@]} ; do
 	  		if [ ! -f "/$f" ]
 				then
 					mkdir -p /$(dirname "$f" ) 
-					curl -sSL $RAWURL/main/$f -o /$f &
+					curl -sSL $RAWURLB/main/$f -o /$f &
 					[ $( jobs | wc -l ) -ge $( nproc ) ] && wait
 			fi
 	 fi  
@@ -65,7 +66,7 @@ for j in ${pkgs[@]} ; do
 	done
 done
 #################
-commits=$(git log --pretty=%h)
+commits=$(git log --pretty=%H)
 ######## Packages metadata
 spdup ()
 {
